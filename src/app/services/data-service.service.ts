@@ -3,13 +3,18 @@ import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators'
 import { GlobalDataSummary } from '../models/gloabl-data';
 import { DateWiseData } from '../models/date-wise-data';
-
+import { DatePipe } from '@angular/common';
+// import { format } from 'date-format';
+// var format = require('date-format');
 @Injectable({
   providedIn: 'root'
 })
 export class DataServiceService {
-
-  private globalDataUrl = `https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/04-17-2020.csv`;
+  // private currentDate = date('dd');
+  // private currentMonth = date('MM');
+  // private currentYear = date('yyyy');
+  // private tomorrowDate = this.currentMonth + '-' + this.currentDate + '-' + this.currentYear;
+  private globalDataUrl = `https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/`;
   private dateWiseDataUrl = `https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv`
   constructor(private http: HttpClient) { }
 
@@ -40,15 +45,25 @@ export class DataServiceService {
           })
           
         })
-
-
+        
+       
         // console.log(mainData);
         return mainData;
       }))
   }
-
+  pad2(number) {
+    return (number < 10 ? '0' : '') + number
+  }
   getGlobalData() {
-    return this.http.get(this.globalDataUrl, { responseType: 'text' }).pipe(
+    var d = new Date();
+    var date = d.getDate() - 1;
+    var month = this.pad2(d.getUTCMonth() + 1);
+    var year = d.getFullYear();
+    var dateStr = month + "-" + date + "-" + year;
+
+    // console.log(dateStr);
+    // +dateStr+'.csv'
+    return this.http.get(this.globalDataUrl+dateStr+'.csv', { responseType: 'text' }).pipe(
       map(result => {
         let data: GlobalDataSummary[] = [];
         let raw = {}

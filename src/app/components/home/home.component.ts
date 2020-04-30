@@ -36,12 +36,11 @@ export class HomeComponent implements OnInit {
 
   
   ngOnInit(): void {
-
+    
     this.dataService.getGlobalData()
       .subscribe(
         {
           next: (result) => {
-            console.log(result);
             this.globalData = result;
             result.forEach(cs => {
               if (!Number.isNaN(cs.confirmed)) {
@@ -96,8 +95,6 @@ export class HomeComponent implements OnInit {
             cs.country, value
           ])
     })
-    console.log(this.datatable);
-
   }
 
 }
