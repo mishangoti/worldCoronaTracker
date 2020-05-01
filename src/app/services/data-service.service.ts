@@ -3,17 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators'
 import { GlobalDataSummary } from '../models/gloabl-data';
 import { DateWiseData } from '../models/date-wise-data';
-import { DatePipe } from '@angular/common';
-// import { format } from 'date-format';
-// var format = require('date-format');
+import * as moment from 'moment';
 @Injectable({
   providedIn: 'root'
 })
 export class DataServiceService {
-  // private currentDate = date('dd');
-  // private currentMonth = date('MM');
-  // private currentYear = date('yyyy');
-  // private tomorrowDate = this.currentMonth + '-' + this.currentDate + '-' + this.currentYear;
   private globalDataUrl = `https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/`;
   private dateWiseDataUrl = `https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv`
   constructor(private http: HttpClient) { }
@@ -39,14 +33,10 @@ export class DataServiceService {
               cases : +value ,
               country : con , 
               date : new Date(Date.parse(dates[index])) 
-
             }
             mainData[con].push(dw)
           })
-          
         })
-        
-       
         // console.log(mainData);
         return mainData;
       }))
@@ -55,15 +45,10 @@ export class DataServiceService {
     return (number < 10 ? '0' : '') + number
   }
   getGlobalData() {
-    var d = new Date();
-    var date = d.getDate() - 1;
-    var month = this.pad2(d.getUTCMonth() + 1);
-    var year = d.getFullYear();
-    var dateStr = month + "-" + date + "-" + year;
-
-    // console.log(dateStr);
+    let yesterday = moment().add(-1, 'days').format('MM-DD-YYYY');
+    console.log(yesterday);
     // +dateStr+'.csv'
-    return this.http.get(this.globalDataUrl+dateStr+'.csv', { responseType: 'text' }).pipe(
+    return this.http.get(this.globalDataUrl+yesterday+'.csv', { responseType: 'text' }).pipe(
       map(result => {
         let data: GlobalDataSummary[] = [];
         let raw = {}
